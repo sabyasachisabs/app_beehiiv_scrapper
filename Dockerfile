@@ -9,11 +9,12 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies directly
+RUN pip install --no-cache-dir \
+    requests>=2.31.0 \
+    beautifulsoup4>=4.12.0 \
+    lxml>=4.9.0 \
+    apify>=1.0.0
 
 # Copy the actor code
 COPY src/ ./src/

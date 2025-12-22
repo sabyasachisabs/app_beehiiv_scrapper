@@ -1,0 +1,23 @@
+# Apify ignore file - files to exclude from build
+venv/
+env/
+ENV/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+posts/
+storage/
+.git/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+apify.json.deprecated
+
+# Note: requirements.txt, Dockerfile, and source files are included
+
