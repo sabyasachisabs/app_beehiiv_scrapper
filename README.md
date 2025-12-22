@@ -1,6 +1,6 @@
 # Beehiiv Post Scraper
 
-A Python script to download posts from Beehiiv-powered websites (e.g., superhuman.ai).
+A generic Python script to download posts from any Beehiiv-powered website. Works with any Beehiiv newsletter or publication.
 
 ## Features
 
@@ -27,9 +27,9 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Basic Usage
+### Interactive Mode (Recommended)
 
-Download posts from superhuman.ai (default):
+Simply run the script and it will prompt you for the website URL and number of posts:
 
 ```bash
 # Make sure virtual environment is activated
@@ -38,38 +38,46 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 python scrape_beehiiv.py
 ```
 
-### Custom Options
+The script will ask you:
+1. **Beehiiv website URL**: Enter the full URL (e.g., `https://www.superhuman.ai`) or just the domain (e.g., `superhuman.ai`)
+2. **Number of posts**: Enter how many posts you want to scrape (default: 50)
+
+### Command-Line Mode
+
+You can also provide all options via command-line arguments:
 
 ```bash
-# Download from a different website
-python scrape_beehiiv.py --url https://example.beehiiv.com
+# Download from a specific website with specific number of posts
+python scrape_beehiiv.py --url https://www.superhuman.ai --max-posts 50
 
-# Limit number of posts
-python scrape_beehiiv.py --max-posts 20
+# Download from any Beehiiv website
+python scrape_beehiiv.py --url https://example.beehiiv.com --max-posts 20
 
 # Save as CSV (default - all posts in one file)
-python scrape_beehiiv.py --format csv
+python scrape_beehiiv.py --url https://example.beehiiv.com --format csv
 
 # Save as text files instead
-python scrape_beehiiv.py --format txt
+python scrape_beehiiv.py --url https://example.beehiiv.com --format txt
 
 # Save as JSON files
-python scrape_beehiiv.py --format json
+python scrape_beehiiv.py --url https://example.beehiiv.com --format json
 
 # Skip RSS feed and scrape directly
-python scrape_beehiiv.py --no-rss
+python scrape_beehiiv.py --url https://example.beehiiv.com --no-rss
 
 # Custom output directory
-python scrape_beehiiv.py --output my_posts
+python scrape_beehiiv.py --url https://example.beehiiv.com --output my_posts
 ```
 
 ### Command Line Arguments
 
-- `--url`: Base URL of the Beehiiv website (default: https://www.superhuman.ai)
+- `--url`: Base URL of the Beehiiv website (if not provided, will prompt interactively)
 - `--output`: Output directory for downloaded posts (default: posts)
-- `--max-posts`: Maximum number of posts to download (default: 50)
+- `--max-posts`: Maximum number of posts to download (if not provided, will prompt interactively)
 - `--format`: Output format - 'csv', 'json', or 'txt' (default: csv)
 - `--no-rss`: Skip RSS feed and scrape website directly
+
+**Note**: If you don't provide `--url` or `--max-posts`, the script will run in interactive mode and prompt you for these values.
 
 ## Output
 
@@ -106,7 +114,32 @@ Each post is saved as a separate TXT file containing:
 - Published date
 - Full content
 
-## Example
+## Examples
+
+### Interactive Mode Example
+
+```bash
+python scrape_beehiiv.py
+```
+
+Output:
+```
+============================================================
+🐝 Beehiiv Post Scraper
+============================================================
+
+Enter the Beehiiv newsletter website URL (e.g., https://www.superhuman.ai or superhuman.ai): superhuman.ai
+
+Enter the number of posts to scrape (default: 50): 25
+
+📋 Configuration:
+   Website: https://superhuman.ai
+   Posts to scrape: 25
+   Output format: csv
+   Output directory: posts
+```
+
+### Command-Line Example
 
 ```bash
 python scrape_beehiiv.py --url https://www.superhuman.ai --max-posts 10 --format csv

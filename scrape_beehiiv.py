@@ -372,17 +372,92 @@ class BeehiivScraper:
         return posts
 
 
+def normalize_url(url):
+    """Normalize and validate URL"""
+    url = url.strip()
+    
+    # Remove trailing slash
+    url = url.rstrip('/')
+    
+    # Add https:// if not provided
+    if not url.startswith('http://') and not url.startswith('https://'):
+        url = 'https://' + url
+    
+    return url
+
+
+def get_website_url():
+    """Prompt user for Beehiiv website URL"""
+    while True:
+        url = input("\nEnter the Beehiiv newsletter website URL (e.g., https://www.superhuman.ai or superhuman.ai): ").strip()
+        
+        if not url:
+            print("❌ URL cannot be empty. Please try again.")
+            continue
+        
+        try:
+            url = normalize_url(url)
+            # Basic validation - check if it looks like a URL
+            if '.' not in url.replace('https://', '').replace('http://', ''):
+                print("❌ Invalid URL format. Please enter a valid website URL.")
+                continue
+            return url
+        except Exception as e:
+            print(f"❌ Error processing URL: {e}. Please try again.")
+            continue
+
+
+def get_number_of_posts():
+    """Prompt user for number of posts to scrape"""
+    while True:
+        try:
+            num_posts = input("\nEnter the number of posts to scrape (default: 50): ").strip()
+            
+            if not num_posts:
+                return 50  # Default value
+            
+            num_posts = int(num_posts)
+            
+            if num_posts <= 0:
+                print("❌ Number of posts must be greater than 0. Please try again.")
+                continue
+            
+            if num_posts > 1000:
+                confirm = input(f"⚠️  You requested {num_posts} posts. This may take a while. Continue? (y/n): ").strip().lower()
+                if confirm != 'y':
+                    continue
+            
+            return num_posts
+        except ValueError:
+            print("❌ Please enter a valid number.")
+            continue
+
+
 def main():
     """Main function"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='Download posts from a Beehiiv website')
-    parser.add_argument('--url', default='https://www.superhuman.ai',
-                       help='Base URL of the Beehiiv website (default: https://www.superhuman.ai)')
+    parser = argparse.ArgumentParser(
+        description='Download posts from any Beehiiv-powered website',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Interactive mode (will prompt for website and number of posts)
+  python scrape_beehiiv.py
+  
+  # Command-line mode
+  python scrape_beehiiv.py --url https://www.superhuman.ai --max-posts 50
+  
+  # Custom output directory
+  python scrape_beehiiv.py --url https://example.beehiiv.com --max-posts 20 --output my_posts
+        """
+    )
+    parser.add_argument('--url', default=None,
+                       help='Base URL of the Beehiiv website (if not provided, will prompt)')
     parser.add_argument('--output', default='posts',
                        help='Output directory for downloaded posts (default: posts)')
-    parser.add_argument('--max-posts', type=int, default=50,
-                       help='Maximum number of posts to download (default: 50)')
+    parser.add_argument('--max-posts', type=int, default=None,
+                       help='Maximum number of posts to download (if not provided, will prompt)')
     parser.add_argument('--format', choices=['json', 'txt', 'csv'], default='csv',
                        help='Output format (default: csv)')
     parser.add_argument('--no-rss', action='store_true',
@@ -390,8 +465,38 @@ def main():
     
     args = parser.parse_args()
     
-    scraper = BeehiivScraper(args.url, output_dir=args.output)
-    scraper.download_posts(use_rss=not args.no_rss, max_posts=args.max_posts, format=args.format)
+    # Show header if running in interactive mode
+    if not args.url or args.max_posts is None:
+        print("=" * 60)
+        print("🐝 Beehiiv Post Scraper")
+        print("=" * 60)
+    
+    # Get website URL (from args or prompt)
+    if args.url:
+        website_url = normalize_url(args.url)
+    else:
+        website_url = get_website_url()
+    
+    # Get number of posts (from args or prompt)
+    if args.max_posts is not None:
+        max_posts = args.max_posts
+    else:
+        max_posts = get_number_of_posts()
+    
+    # Validate inputs
+    if max_posts <= 0:
+        print("❌ Error: Number of posts must be greater than 0")
+        return
+    
+    print(f"\n📋 Configuration:")
+    print(f"   Website: {website_url}")
+    print(f"   Posts to scrape: {max_posts}")
+    print(f"   Output format: {args.format}")
+    print(f"   Output directory: {args.output}")
+    print()
+    
+    scraper = BeehiivScraper(website_url, output_dir=args.output)
+    scraper.download_posts(use_rss=not args.no_rss, max_posts=max_posts, format=args.format)
 
 
 if __name__ == '__main__':
