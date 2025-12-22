@@ -27,7 +27,8 @@ class BeehiivScraper:
         """
         self.base_url = base_url.rstrip('/')
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
+        # Create output directory if it doesn't exist (including parent directories)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
