@@ -12,8 +12,10 @@ __pycache__/
 
 # Output directories
 posts/
+storage/
 *.json
 *.txt
+*.csv
 
 # IDE
 .vscode/
@@ -25,4 +27,8 @@ posts/
 # OS
 .DS_Store
 Thumbs.db
+
+# Apify
+.apify/
+apify_storage/
 
