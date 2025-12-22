@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the actor code
 COPY src/ ./src/
-COPY scrape_beehiiv.py ./scrape_beehiiv.py
+COPY scrape_beehiiv.py ./
 
 # Set the main script as entrypoint
 CMD ["python", "src/main.py"]
