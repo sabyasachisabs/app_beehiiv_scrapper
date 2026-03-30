@@ -1,3 +1,5 @@
+### Each commit will trigger action to update github pages.
+
 # Beehiiv Post Scraper
 
 A generic Python script to download posts from any Beehiiv-powered website. Works with any Beehiiv newsletter or publication.
